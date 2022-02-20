@@ -1,6 +1,9 @@
 import { FC } from 'react'
 import Web3 from 'web3'
 import AppLayout from '@app/ui/layouts/App'
+import { PageContent } from '@app/ui/components/PageContent'
+import { PageWrapper } from '@app/ui/components/PageWrapper'
+
 
 type IndexPageProps = {
 
@@ -21,13 +24,13 @@ const balance = await getBalance(address)
 export const IndexPage: FC<IndexPageProps> = ({}) => {
   return (
     <AppLayout>
-      <div>
-        <div>
+      <PageContent>
+        <PageWrapper>
           <h1>DORP</h1>
           <hr />
           <h2>Your balance: {balance}</h2>
-        </div>
-      </div>
+        </PageWrapper>
+      </PageContent>
     </AppLayout>
   )
 }

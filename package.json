@@ -13,6 +13,7 @@
     "styled-bootstrap-grid": "^3.1.2",
     "styled-components": "^5.3.3",
     "styled-normalize": "^8.0.7",
+    "url-loader": "^4.1.1",
     "web3": "^1.7.0"
   },
   "devDependencies": {
