@@ -29,6 +29,11 @@ export const IndexPage: FC<IndexPageProps> = ({}) => {
           <h1>DORP</h1>
           <hr />
           <h2>Your balance: {balance}</h2>
+          <h3> this is a h3</h3>
+          <h5> this is a h5</h5>
+          <p>this is a p</p>
+          <code>Your balance: {balance}</code>
+          <h4>This is a h4</h4>
         </PageWrapper>
       </PageContent>
     </AppLayout>
