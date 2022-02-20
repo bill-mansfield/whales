@@ -1,11 +1,10 @@
 import { FC } from 'react'
-import Web3 from 'web3'
 import AppLayout from '@app/ui/layouts/App'
 import { PageContent } from '@app/ui/components/PageContent'
 import { PageWrapper } from '@app/ui/components/PageWrapper'
 import pxToRem from '@app/ui/utils/pxToRem';
 import styled from 'styled-components';
-import { getManyBalances } from '@app/ui/utils/web3'
+import { getManyBalances, getBalancesFromTime } from '@app/ui/utils/web3'
 
 type IndexPageProps = {
 
@@ -20,6 +19,7 @@ const top5Wallets = [
 ]
 
 const top5Balances = await getManyBalances(top5Wallets)
+console.log('index', await getBalancesFromTime())
 
 export const IndexPage: FC<IndexPageProps> = ({}) => {
   return (
@@ -30,12 +30,11 @@ export const IndexPage: FC<IndexPageProps> = ({}) => {
           <hr />
           <BalanceWrapper>
             {top5Balances?.map((balance: string, i: number) => (
-              <BalanceRow>
-                <h2 key={i + 1}>Wallet No. {i + 1}: {balance}</h2>
+              <BalanceRow key={i + 1}>
+                <h2>Wallet No. {i + 1}: {balance}</h2>
               </BalanceRow>
             ))}
           </BalanceWrapper>
-
         </PageWrapper>
       </PageContent>
     </AppLayout>
