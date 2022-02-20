@@ -3,23 +3,23 @@ import Web3 from 'web3'
 import AppLayout from '@app/ui/layouts/App'
 import { PageContent } from '@app/ui/components/PageContent'
 import { PageWrapper } from '@app/ui/components/PageWrapper'
-
+import pxToRem from '@app/ui/utils/pxToRem';
+import styled from 'styled-components';
+import { getManyBalances } from '@app/ui/utils/web3'
 
 type IndexPageProps = {
 
 }
 
-const rpcURL = 'https://mainnet.infura.io/v3/' + process.env.NEXT_PUBLIC_INFURA_API_KEY
-const web3 = new Web3(rpcURL)
-const address = process.env.NEXT_PUBLIC_ADDRESS as string
+const top5Wallets = [
+ '0x00000000219ab540356cbb839cbe05303d7705fa',
+ '0x73bceb1cd57c711feac4224d062b0f6ff338501e',
+ '0x4ddc2d193948926d02f9b1fe9e1daa0718270ed5',
+ '0xdc24316b9ae028f1497c275eb9192a3ea0f67022',
+ '0x011b6e24ffb0b5f5fcc564cf4183c5bbbc96d515'
+]
 
-const getBalance = async (address: string) => {
-  return await web3.eth.getBalance(address, (err, wei) => {
-    web3.utils.fromWei(wei, 'ether')
-  })
-}
-
-const balance = await getBalance(address)
+const top5Balances = await getManyBalances(top5Wallets)
 
 export const IndexPage: FC<IndexPageProps> = ({}) => {
   return (
@@ -28,12 +28,14 @@ export const IndexPage: FC<IndexPageProps> = ({}) => {
         <PageWrapper>
           <h1>DORP</h1>
           <hr />
-          <h2>Your balance: {balance}</h2>
-          <h3> this is a h3</h3>
-          <h5> this is a h5</h5>
-          <p>this is a p</p>
-          <code>Your balance: {balance}</code>
-          <h4>This is a h4</h4>
+          <BalanceWrapper>
+            {top5Balances?.map((balance: string, i: number) => (
+              <BalanceRow>
+                <h2 key={i + 1}>Wallet No. {i + 1}: {balance}</h2>
+              </BalanceRow>
+            ))}
+          </BalanceWrapper>
+
         </PageWrapper>
       </PageContent>
     </AppLayout>
@@ -42,3 +44,15 @@ export const IndexPage: FC<IndexPageProps> = ({}) => {
 
 
 export default IndexPage
+
+const BalanceWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  row-gap: ${pxToRem(20)};
+`
+
+const BalanceRow = styled.div`
+  display: flex;
+  flex-direction: row;
+  row-gap: ${pxToRem(20)};
+`

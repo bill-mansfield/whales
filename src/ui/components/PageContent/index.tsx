@@ -12,9 +12,9 @@ export const PageContent = styled.div`
   flex-direction: column;
   row-gap: ${pxToRem(15)};
   ${media.desktop`
-    padding-left: 2.5rem;
-    padding-right: 2.5rem;
-    padding-top: 2.5rem;
+    padding-left: ${pxToRem(300)};
+    padding-right: ${pxToRem(300)};
+    padding-top: ${pxToRem(100)};
     padding-bottom: ${pxToRem(114)};
     row-gap: ${pxToRem(30)};
   `}
