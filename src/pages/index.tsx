@@ -4,7 +4,8 @@ import { PageContent } from '@app/ui/components/PageContent'
 import { PageWrapper } from '@app/ui/components/PageWrapper'
 import pxToRem from '@app/ui/utils/pxToRem';
 import styled from 'styled-components';
-import { getBalancesOverTime } from '@app/ui/utils/web3'
+import { getBalancesOverTime, averageBlockTime } from '@app/ui/utils/web3'
+import moment from 'moment'
 
 type wallet = {
   [key: string]: number
@@ -21,23 +22,31 @@ const top5Wallets = [
 
 export const IndexPage: FC = () => {
 
-  const [tableData, setTableData] = useState<string[][]>()
+	const [tableData, setTableData] = useState<string[][]>()
+  const [averageBlockTime, setAverageBlockTime] = useState<number>()
 
-  const initTableData = async () => {
-    const [first, second, third, fourth, fifth] = await Promise.all(
-      top5Wallets.map(async (wallet: string) => {
-        return await getBalancesOverTime(wallet)
-      })
-    )
+  // const initTableData = async () => {
+  //   const [first, second, third, fourth, fifth] = await Promise.all(
+  //     top5Wallets.map(async (wallet: string) => {
+  //       return await getBalancesOverTime(wallet)
+  //     })
+  //   )
 
-    return [first, second, third, fourth, fifth ]
-  }
-  initTableData().then(res => {
-    setTableData(res)
-  })
+  //   return [first, second, third, fourth, fifth ]
+  // }
+  // initTableData().then(res => {
+  //   setTableData(res)
+  // })
 
   // Infura free plan rate limit hit (no surprise)
   // TODO: implement caching
+
+  const initAvaerageBlockTime = async () => {
+    return await typeof averageBlockTime === 'number' ? averageBlockTime : 10
+  }
+  initAvaerageBlockTime().then(res => {
+    setAverageBlockTime(res)
+  })
 
   const data = ([
     [
@@ -97,25 +106,27 @@ export const IndexPage: FC = () => {
     <AppLayout>
       <PageContent>
         <PageWrapper>
-          <h1>DORP</h1>
+          <h1>The DORP Index</h1>
           <hr />
           <BalanceWrapper>
             <table>
               <thead>
                 <tr>
+                  <th>Wallet</th>
                   <th>Current</th>
-                  <th>120</th>
-                  <th>80</th>
-                  <th>40</th>
-                  <th>20</th>
-                  <th>10</th>
-                  <th>5</th>
-                  <th>1</th>
+                  <th>{Math.round(averageBlockTime ? 120 * averageBlockTime / 60 : 0)} Hours ago</th>
+                  <th>{Math.round(averageBlockTime ? 80 * averageBlockTime / 60 : 0)} Hours ago</th>
+                  <th>{Math.round(averageBlockTime ? 40 * averageBlockTime / 60 : 0)} Hours ago</th>
+                  <th>{Math.round(averageBlockTime ? 20 * averageBlockTime / 60 : 0)} Hours ago</th>
+                  <th>{Math.round(averageBlockTime ? 10 * averageBlockTime / 60 : 0)} Hours ago</th>
+                  <th>{Math.round(averageBlockTime ? 5 * averageBlockTime / 60 : 0)} Hour ago</th>
+                  <th>{Math.round(averageBlockTime ? 1 * averageBlockTime : 0)} minutes ago</th>
                 </tr>
               </thead>
               <tbody>
                 {data ? data?.map((period: any, i: number) => (
                   <tr key={i}>
+                    <td>0x011b6e24ffb0b5f5fcc564cf4183c5bbbc96d515</td>
                     <td>{period[0]}</td>
                     <td>{period[1]}</td>
                     <td>{period[2]}</td>
