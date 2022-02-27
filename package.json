@@ -10,8 +10,10 @@
     "ethereum-block-by-date": "^1.4.2",
     "moment": "^2.29.1",
     "next": "^12.0.8",
+    "plotly.js": "^2.9.0",
     "react": "17.0.2",
     "react-dom": "17.0.2",
+    "react-plotly.js": "^2.5.1",
     "styled-bootstrap-grid": "^3.1.2",
     "styled-components": "^5.3.3",
     "styled-normalize": "^8.0.7",
@@ -19,6 +21,7 @@
     "web3": "^1.7.0"
   },
   "devDependencies": {
+    "@types/plotly.js": "^1.54.20",
     "@types/react": "^17.0.39",
     "@types/styled-components": "^5.1.23",
     "eslint": "8.7.0",

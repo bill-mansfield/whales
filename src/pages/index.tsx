@@ -1,4 +1,4 @@
-import { FC, useState } from 'react'
+import { FC, useState, useEffect } from 'react'
 import AppLayout from '@app/ui/layouts/App'
 import { PageContent } from '@app/ui/components/PageContent'
 import { PageWrapper } from '@app/ui/components/PageWrapper'
@@ -8,6 +8,8 @@ import { getBalancesOverTime, averageBlockTime } from '@app/ui/utils/web3'
 import moment from 'moment'
 import TableCell from '@app/ui/components/TableCell'
 import WalletCell from '@app/ui/components/WalletCell'
+import { callApi } from '@app/ui/utils/callApi'
+import EthChart from '@app/ui/components/EthChart'
 
 type wallet = {
   [key: string]: number
@@ -26,6 +28,7 @@ export const IndexPage: FC = () => {
 
 	const [tableData, setTableData] = useState<string[][]>()
   const [averageBlockTime, setAverageBlockTime] = useState<number>()
+  const [ethChartData, setEthChartData] = useState<any>()
 
   // const initTableData = async () => {
   //   const [first, second, third, fourth, fifth] = await Promise.all(
@@ -41,14 +44,38 @@ export const IndexPage: FC = () => {
   // })
 
   // Infura free plan rate limit hit (no surprise)
+  const fetchChartData = async () => {
+    type coinGeckoSort = {
+      index: any
+      price: any
+      volumes: any
+    }
+    let data: coinGeckoSort = { index: [], price: [], volumes: [] };
+    let result = await callApi("https://api.coingecko.com/api/v3/coins/ethereum/market_chart?vs_currency=usd&days=1&interval=1m")
+
+    result.prices.map((item: any ) => {
+      data.index.push(item[0])
+      data.price.push(item[1])
+    })
+    result.total_volumes.map((item: any ) => {
+      data.volumes.push(item[1])
+    })
+    setEthChartData(data)
+  };
   // TODO: implement caching
 
   const initAvaerageBlockTime = async () => {
     return await typeof averageBlockTime === 'number' ? averageBlockTime : 10
   }
+
   initAvaerageBlockTime().then(res => {
     setAverageBlockTime(res)
   })
+
+
+  useEffect(() => {
+    fetchChartData()
+  }, [])
 
   const data = ([
     [
@@ -144,6 +171,7 @@ export const IndexPage: FC = () => {
               </tbody>
             </Table>
           </BalanceWrapper>
+          <EthChart data={ethChartData} />
         </PageWrapper>
       </PageContent>
     </AppLayout>
