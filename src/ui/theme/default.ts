@@ -1,8 +1,9 @@
 import { ThemeConfig } from './type'
 
 const colors = {
-  red: 'red',
-  grey: 'grey',
+  lightGreen: '#9cffb6',
+  lightRed: '#ffabab',
+  lightYellow: '#faff99',
   white: '#ffffff',
   primary: '#012F57',
   danger: '#D92241',

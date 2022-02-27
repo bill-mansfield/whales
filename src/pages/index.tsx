@@ -6,6 +6,8 @@ import pxToRem from '@app/ui/utils/pxToRem';
 import styled from 'styled-components';
 import { getBalancesOverTime, averageBlockTime } from '@app/ui/utils/web3'
 import moment from 'moment'
+import TableCell from '@app/ui/components/TableCell'
+import WalletCell from '@app/ui/components/WalletCell'
 
 type wallet = {
   [key: string]: number
@@ -108,8 +110,10 @@ export const IndexPage: FC = () => {
         <PageWrapper>
           <h1>The DORP Index</h1>
           <hr />
+          <p>Whales are buying the dip</p>
+          <p>Whales are aligned</p>
           <BalanceWrapper>
-            <table>
+            <Table>
               <thead>
                 <tr>
                   <th>Wallet</th>
@@ -126,20 +130,19 @@ export const IndexPage: FC = () => {
               <tbody>
                 {data ? data?.map((period: any, i: number) => (
                   <tr key={i}>
-                    <td>0x011b6e24ffb0b5f5fcc564cf4183c5bbbc96d515</td>
-                    <td>{period[0]}</td>
-                    <td>{period[1]}</td>
-                    <td>{period[2]}</td>
-                    <td>{period[3]}</td>
-                    <td>{period[4]}</td>
-                    <td>{period[5]}</td>
-                    <td>{period[6]}</td>
-                    <td>{period[7]}</td>
+                    <WalletCell TwentyHoursAgo={period[1]} CurrentValue={period[0]} Wallet={top5Wallets[i]} />
+                    <TableCell CellValue={period[0]} PreviousCellValue={period[1]} />
+                    <TableCell CellValue={period[1]} PreviousCellValue={period[1]} />
+                    <TableCell CellValue={period[2]} PreviousCellValue={period[1]} />
+                    <TableCell CellValue={period[3]} PreviousCellValue={period[2]} />
+                    <TableCell CellValue={period[4]} PreviousCellValue={period[3]} />
+                    <TableCell CellValue={period[5]} PreviousCellValue={period[4]} />
+                    <TableCell CellValue={period[6]} PreviousCellValue={period[5]} />
+										<TableCell CellValue={period[7]} PreviousCellValue={period[6]} />
                   </tr>
-                ))
-              : ''}
+                )) : ''}
               </tbody>
-            </table>
+            </Table>
           </BalanceWrapper>
         </PageWrapper>
       </PageContent>
@@ -155,9 +158,7 @@ const BalanceWrapper = styled.div`
   flex-direction: column;
   row-gap: ${pxToRem(20)};
 `
-
-const BalanceRow = styled.div`
-  display: flex;
-  flex-direction: row;
-  row-gap: ${pxToRem(20)};
+const Table = styled.table`
+  display: block;
+  overflow-x: auto;
 `
