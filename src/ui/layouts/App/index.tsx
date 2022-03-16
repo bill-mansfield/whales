@@ -4,7 +4,7 @@ import React from 'react'
 import { GlobalStyle } from '@app/ui/styles/global';
 import { GridThemeProvider } from 'styled-bootstrap-grid';
 import { ThemeWrapper } from '@app/ui/theme/Context';
-import REMScaling from '@app/ui/styles/REMScaling';
+// import REMScaling from '@app/ui/styles/REMScaling';
 
 export const AppLayout: FC<SiteContainerProps> = ({
   children,
@@ -15,13 +15,13 @@ export const AppLayout: FC<SiteContainerProps> = ({
   return (
 		<ThemeWrapper>
 			<GlobalStyle />
-			<REMScaling>
+			{/* <REMScaling> */}
 				<GridThemeProvider gridTheme={gridTheme}>
 					<SiteContainer>
 						{children}
 					</SiteContainer>
 				</GridThemeProvider>
-			</REMScaling>
+			{/* </REMScaling> */}
 		</ThemeWrapper>
   )
 }

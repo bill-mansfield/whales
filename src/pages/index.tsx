@@ -30,18 +30,18 @@ export const IndexPage: FC = () => {
   const [averageBlockTime, setAverageBlockTime] = useState<number>()
   const [ethChartData, setEthChartData] = useState<any>()
 
-  // const initTableData = async () => {
-  //   const [first, second, third, fourth, fifth] = await Promise.all(
-  //     top5Wallets.map(async (wallet: string) => {
-  //       return await getBalancesOverTime(wallet)
-  //     })
-  //   )
+  const initTableData = async () => {
+    const [first, second, third, fourth, fifth] = await Promise.all(
+      top5Wallets.map(async (wallet: string) => {
+        return await getBalancesOverTime(wallet)
+      })
+    )
 
-  //   return [first, second, third, fourth, fifth ]
-  // }
-  // initTableData().then(res => {
-  //   setTableData(res)
-  // })
+    return [first, second, third, fourth, fifth ]
+  }
+  initTableData().then(res => {
+    setTableData(res)
+  })
 
   // Infura free plan rate limit hit (no surprise)
   const fetchChartData = async () => {
@@ -62,7 +62,6 @@ export const IndexPage: FC = () => {
     })
     setEthChartData(data)
   };
-  // TODO: implement caching
 
   const initAvaerageBlockTime = async () => {
     return await typeof averageBlockTime === 'number' ? averageBlockTime : 10
