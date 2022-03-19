@@ -8,10 +8,12 @@ const Chart = dynamic(import('react-plotly.js'), {
 
 export type EthChartProps = {
 	data: any
+	twentyFourHourPrice?: number
 }
 
 export const EthChart: FC<EthChartProps> = ({
-	data
+	data,
+	twentyFourHourPrice
 }) => {
 
 		const trace_price = {
@@ -70,6 +72,7 @@ export const EthChart: FC<EthChartProps> = ({
   return (
 		<>
 			<h2 className='text-center text-primary'>Current price $ {data?.price[data?.price?.length - 1].toFixed(2)}</h2>
+			<h2 className='text-center text-primary'>Price 24hrs ago $ {twentyFourHourPrice?.toFixed(2)}</h2>
 			<Chart
 				//@ts-ignore
 				data={series}

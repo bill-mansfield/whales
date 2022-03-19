@@ -1,4 +1,4 @@
-export const callApi = async (url: string) => {
+export const callGecko = async (url: string) => {
 	let response = await fetch(url, {
 		headers: {
 			"Content-Type": "application/json",

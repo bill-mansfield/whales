@@ -4,12 +4,13 @@ import { PageContent } from '@app/ui/components/PageContent'
 import { PageWrapper } from '@app/ui/components/PageWrapper'
 import pxToRem from '@app/ui/utils/pxToRem';
 import styled from 'styled-components';
-import { getBalancesOverTime, averageBlockTime } from '@app/ui/utils/web3'
+import { getBalancesOverTime, averageBlockTime } from '@app/lib/web3'
 import moment from 'moment'
 import TableCell from '@app/ui/components/TableCell'
 import WalletCell from '@app/ui/components/WalletCell'
-import { callApi } from '@app/ui/utils/callApi'
 import EthChart from '@app/ui/components/EthChart'
+import { fetchChartData, fetchHistoicalPrice, ethGecko, fetchCurrentPrice } from '@app/lib/gecko'
+import { deltaPrice } from '@app/ui/utils/deltaPrice'
 
 type wallet = {
   [key: string]: number
@@ -29,39 +30,22 @@ export const IndexPage: FC = () => {
 	const [tableData, setTableData] = useState<string[][]>()
   const [averageBlockTime, setAverageBlockTime] = useState<number>()
   const [ethChartData, setEthChartData] = useState<any>()
+  const [twentyFourHourPrice, setTwentyFourHourPrice] = useState<number>()
+  const [currentPrice, setCurrentPrice] = useState<number>()
 
-  const initTableData = async () => {
-    const [first, second, third, fourth, fifth] = await Promise.all(
-      top5Wallets.map(async (wallet: string) => {
-        return await getBalancesOverTime(wallet)
-      })
-    )
+  // const initTableData = async () => {
+  //   const [first, second, third, fourth, fifth] = await Promise.all(
+  //     top5Wallets.map(async (wallet: string) => {
+  //       return await getBalancesOverTime(wallet)
+  //     })
+  //   )
 
-    return [first, second, third, fourth, fifth ]
-  }
-  initTableData().then(res => {
-    setTableData(res)
-  })
+  //   return [first, second, third, fourth, fifth ]
+  // }
+  // initTableData().then(res => {
+  //   setTableData(res)
+  // })
 
-  // Infura free plan rate limit hit (no surprise)
-  const fetchChartData = async () => {
-    type coinGeckoSort = {
-      index: any
-      price: any
-      volumes: any
-    }
-    let data: coinGeckoSort = { index: [], price: [], volumes: [] };
-    let result = await callApi("https://api.coingecko.com/api/v3/coins/ethereum/market_chart?vs_currency=usd&days=1&interval=1m")
-
-    result.prices.map((item: any ) => {
-      data.index.push(item[0])
-      data.price.push(item[1])
-    })
-    result.total_volumes.map((item: any ) => {
-      data.volumes.push(item[1])
-    })
-    setEthChartData(data)
-  };
 
   const initAvaerageBlockTime = async () => {
     return await typeof averageBlockTime === 'number' ? averageBlockTime : 10
@@ -72,62 +56,71 @@ export const IndexPage: FC = () => {
   })
 
 
+
   useEffect(() => {
-    fetchChartData()
+    fetchChartData().then((res) => {
+      setEthChartData(res)
+    })
+    fetchHistoicalPrice(moment.utc().subtract(1,"day").format("DD-MM-YYYY")).then((res) => {
+      setTwentyFourHourPrice(res?.market_data?.current_price?.usd)
+    })
+    fetchCurrentPrice().then((res) => {
+      setCurrentPrice(res.ethereum.usd)
+    })
   }, [])
 
-  // const data = ([
-  //   [
-  //     '9579042.00',
-  //     '9579042.00',
-  //     '9579042.00',
-  //     '9579042.00',
-  //     '9579042.00',
-  //     '9579042.00',
-  //     '9579042.00',
-  //     '9579042.00'
-  //   ],
-  //   [
-  //     '2003504.57',
-  //     '2003504.57',
-  //     '2003504.57',
-  //     '2003504.57',
-  //     '2003504.57',
-  //     '2003504.57',
-  //     '2003504.57',
-  //     '2003504.57'
-  //   ],
-  //   [
-  //     '994999.491',
-  //     '994834.492',
-  //     '994829.492',
-  //     '994824.492',
-  //     '994824.492',
-  //     '994824.492',
-  //     '995024.492',
-  //     '994999.491'
-  //   ],
-  //   [
-  //     '575220.379',
-  //     '575250.564',
-  //     '575267.626',
-  //     '575363.856',
-  //     '575323.296',
-  //     '575220.379',
-  //     '575220.379',
-  //     '575220.379'
-  //   ],
-  //   [
-  //     '569354.336',
-  //     '569337.925',
-  //     '569308.775',
-  //     '569309.518',
-  //     '569312.001',
-  //     '569356.536',
-  //     '569353.586',
-  //     '569354.336'
-  //   ]
-  // ])
+  const data = ([
+    [
+      '9579042.00',
+      '9579042.00',
+      '9579042.00',
+      '9579042.00',
+      '9579042.00',
+      '9579042.00',
+      '9579042.00',
+      '9579042.00'
+    ],
+    [
+      '2003504.57',
+      '2003504.57',
+      '2003504.57',
+      '2003504.57',
+      '2003504.57',
+      '2003504.57',
+      '2003504.57',
+      '2003504.57'
+    ],
+    [
+      '994999.491',
+      '994834.492',
+      '994829.492',
+      '994824.492',
+      '994824.492',
+      '994824.492',
+      '995024.492',
+      '994999.491'
+    ],
+    [
+      '575220.379',
+      '575250.564',
+      '575267.626',
+      '575363.856',
+      '575323.296',
+      '575220.379',
+      '575220.379',
+      '575220.379'
+    ],
+    [
+      '569354.336',
+      '569337.925',
+      '569308.775',
+      '569309.518',
+      '569312.001',
+      '569356.536',
+      '569353.586',
+      '569354.336'
+    ]
+  ])
 
 
   return (
@@ -136,8 +129,9 @@ export const IndexPage: FC = () => {
         <PageWrapper>
           <h1>The DORP Index</h1>
           <hr />
-          <p>Whales are buying the dip</p>
-          <p>Whales are aligned</p>
+          <p>Whale transactions vs price trend * Whale alignment</p>
+          <p>&sigma; * 	&chi; = Dorp index</p>
+          <p>Current 24hr trend: {deltaPrice(twentyFourHourPrice, currentPrice)}%</p>
           <BalanceWrapper>
             <Table>
               <thead>
@@ -170,7 +164,7 @@ export const IndexPage: FC = () => {
               </tbody>
             </Table>
           </BalanceWrapper>
-          <EthChart data={ethChartData} />
+          <EthChart twentyFourHourPrice={twentyFourHourPrice} data={ethChartData} />
         </PageWrapper>
       </PageContent>
     </AppLayout>
