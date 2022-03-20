@@ -38,7 +38,6 @@ export const WalletCellComponent: FC<WalletCellProps> = ({
   )
 }
 
-
 export default WalletCellComponent
 
 const WalletCell = styled.td`
