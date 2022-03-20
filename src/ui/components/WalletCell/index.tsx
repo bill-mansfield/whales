@@ -2,6 +2,7 @@ import { FC } from 'react'
 import styled from 'styled-components';
 import defaultTheme from '@app/ui/theme/default';
 import StatusPill from '@app/ui/components/StatusPill';
+import { whaleStatus } from '@app/ui/utils/whaleStatus'
 
 export type WalletCellProps = {
 	Wallet: string
@@ -17,15 +18,19 @@ export const WalletCellComponent: FC<WalletCellProps> = ({
 
 	let status
 	let color
-	if (CurrentValue > TwentyHoursAgo) {
-		status = 'pumper'
-		color = defaultTheme.colors.lightGreen
-	} else if (CurrentValue < TwentyHoursAgo) {
-		status = 'dumper'
-		color = defaultTheme.colors.lightRed
-	} else {
-		status = 'holding'
-		color = defaultTheme.colors.lightYellow
+	switch (whaleStatus(+TwentyHoursAgo, +CurrentValue)) {
+		case 0:
+			status = 'holding'
+			color = defaultTheme.colors.lightYellow
+			break
+		case 1:
+			status = 'pumper'
+			color = defaultTheme.colors.lightGreen
+			break
+		case -1:
+			status = 'dumper'
+			color = defaultTheme.colors.lightRed
+			break
 	}
 
   return (
