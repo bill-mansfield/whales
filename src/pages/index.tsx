@@ -11,6 +11,8 @@ import WalletCell from '@app/ui/components/WalletCell'
 import EthChart from '@app/ui/components/EthChart'
 import { fetchChartData, fetchHistoicalPrice, ethGecko, fetchCurrentPrice } from '@app/lib/gecko'
 import { deltaPrice } from '@app/ui/utils/deltaPrice'
+import { whaleStatus } from '@app/ui/utils/whaleStatus'
+import { signal } from '@app/ui/utils/signal'
 
 type wallet = {
   [key: string]: number
@@ -32,6 +34,8 @@ export const IndexPage: FC = () => {
   const [ethChartData, setEthChartData] = useState<any>()
   const [twentyFourHourPrice, setTwentyFourHourPrice] = useState<number>()
   const [currentPrice, setCurrentPrice] = useState<number>()
+  const [marketTrend, setMarketTrend] = useState<number>()
+  let whaleChi:number = 0
 
   // const initTableData = async () => {
   //   const [first, second, third, fourth, fifth] = await Promise.all(
@@ -55,8 +59,6 @@ export const IndexPage: FC = () => {
     setAverageBlockTime(res)
   })
 
-
-
   useEffect(() => {
     fetchChartData().then((res) => {
       setEthChartData(res)
@@ -67,6 +69,7 @@ export const IndexPage: FC = () => {
     fetchCurrentPrice().then((res) => {
       setCurrentPrice(res.ethereum.usd)
     })
+    setMarketTrend(deltaPrice(twentyFourHourPrice, currentPrice))
   }, [])
 
   const data = ([
@@ -122,7 +125,6 @@ export const IndexPage: FC = () => {
     ]
   ])
 
-
   return (
     <AppLayout>
       <PageContent>
@@ -131,7 +133,6 @@ export const IndexPage: FC = () => {
           <hr />
           <p>Whale transactions vs price trend * Whale alignment</p>
           <p>&sigma; * 	&chi; = Dorp index</p>
-          <p>Current 24hr trend: {deltaPrice(twentyFourHourPrice, currentPrice)}%</p>
           <BalanceWrapper>
             <Table>
               <thead>
@@ -148,22 +149,28 @@ export const IndexPage: FC = () => {
                 </tr>
               </thead>
               <tbody>
-                {data ? data?.map((period: any, i: number) => (
-                  <tr key={i}>
-                    <WalletCell TwentyHoursAgo={period[1]} CurrentValue={period[0]} Wallet={top5Wallets[i]} />
-                    <TableCell CellValue={period[0]} PreviousCellValue={period[1]} />
-                    <TableCell CellValue={period[1]} PreviousCellValue={period[1]} />
-                    <TableCell CellValue={period[2]} PreviousCellValue={period[1]} />
-                    <TableCell CellValue={period[3]} PreviousCellValue={period[2]} />
-                    <TableCell CellValue={period[4]} PreviousCellValue={period[3]} />
-                    <TableCell CellValue={period[5]} PreviousCellValue={period[4]} />
-                    <TableCell CellValue={period[6]} PreviousCellValue={period[5]} />
-										<TableCell CellValue={period[7]} PreviousCellValue={period[6]} />
-                  </tr>
-                )) : ''}
+                {data ? data?.map((period: any, i: number) => {
+                  whaleChi += whaleStatus(period[1], period[0])
+                  return (
+                    <tr key={i}>
+                      <WalletCell TwentyHoursAgo={period[1]} CurrentValue={period[0]} Wallet={top5Wallets[i]} />
+                      <TableCell CellValue={period[0]} PreviousCellValue={period[1]} />
+                      <TableCell CellValue={period[1]} PreviousCellValue={period[1]} />
+                      <TableCell CellValue={period[2]} PreviousCellValue={period[1]} />
+                      <TableCell CellValue={period[3]} PreviousCellValue={period[2]} />
+                      <TableCell CellValue={period[4]} PreviousCellValue={period[3]} />
+                      <TableCell CellValue={period[5]} PreviousCellValue={period[4]} />
+                      <TableCell CellValue={period[6]} PreviousCellValue={period[5]} />
+                      <TableCell CellValue={period[7]} PreviousCellValue={period[6]} />
+                    </tr>
+                  )
+                }) : ''}
               </tbody>
             </Table>
           </BalanceWrapper>
+          <p>Whale Chi: {whaleChi}</p>
+          <p>Current 24hr trend: {marketTrend}%</p>
+          <p>Current signal: {signal(whaleChi, marketTrend as number)}</p>
           <EthChart twentyFourHourPrice={twentyFourHourPrice} data={ethChartData} />
         </PageWrapper>
       </PageContent>
