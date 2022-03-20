@@ -8,7 +8,6 @@ enum Signal {
 }
 
 export const signal = (whaleChi: number, deltaPrice: number) => {
-	console.log(whaleChi, deltaPrice);
 	if (deltaPrice > 0 && whaleChi > 0) {
 		// Market is up and whales are buying
 		return Signal.Pump
