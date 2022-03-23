@@ -1,4 +1,4 @@
-import { callGecko } from '@app/ui/utils/callApi'
+import { callApi } from '@app/ui/utils/callApi'
 
 export const ethGecko = 'https://api.coingecko.com/api/v3/coins/ethereum/'
 export const simpleEthGecko = 'https://api.coingecko.com/api/v3/simple/'
@@ -11,7 +11,7 @@ export const fetchChartData = async () => {
 	}
 
 	let data: coinGeckoSort = { index: [], price: [], volumes: [] };
-	let result = await callGecko(ethGecko + 'market_chart?vs_currency=usd&days=1&interval=1m')
+	let result = await callApi(ethGecko + 'market_chart?vs_currency=usd&days=1&interval=1m')
 
 	result.prices.map((item: any ) => {
 		data.index.push(item[0])
@@ -24,9 +24,9 @@ export const fetchChartData = async () => {
 }
 
 export const fetchHistoicalPrice = async (date: string) => {
-	return await callGecko(ethGecko + 'history?date=' + date + '&vs_currency=usd')
+	return await callApi(ethGecko + 'history?date=' + date + '&vs_currency=usd')
 }
 
 export const fetchCurrentPrice = async () => {
-	return await callGecko(simpleEthGecko + 'price?ids=ethereum&vs_currencies=usd')
+	return await callApi(simpleEthGecko + 'price?ids=ethereum&vs_currencies=usd')
 }
