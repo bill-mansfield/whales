@@ -1,5 +1,7 @@
-import { FC, useEffect, useState } from 'react'
+import { FC } from 'react'
 import dynamic from 'next/dynamic'
+import styled from 'styled-components';
+import { media } from 'styled-bootstrap-grid';
 
 // @ts-ignore
 const Chart = dynamic(import('react-plotly.js'), {
@@ -70,7 +72,7 @@ export const EthChart: FC<EthChartProps> = ({
 		const series = [trace_price, trace_volumes];
 
   return (
-		<>
+		<ChartWrapper>
 			<h2 className='text-center text-primary'>Current price $ {data?.price[data?.price?.length - 1].toFixed(2)}</h2>
 			<h2 className='text-center text-primary'>Price 24hrs ago $ {twentyFourHourPrice?.toFixed(2)}</h2>
 			<Chart
@@ -80,9 +82,16 @@ export const EthChart: FC<EthChartProps> = ({
 				layout={layout}
 			/>
 			<div id='chart' className='p-0 m-0'></div>
-		</>
+		</ChartWrapper>
   )
 }
 
-
 export default EthChart
+
+export const ChartWrapper = styled.div`
+	display: none;
+  ${media.desktop`
+		display: flex;
+		flex-direction: column;
+  `}
+`

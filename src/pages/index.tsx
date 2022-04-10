@@ -13,6 +13,8 @@ import { fetchChartData, fetchHistoicalPrice, fetchCurrentPrice } from '@app/lib
 import { deltaPrice } from '@app/ui/utils/deltaPrice'
 import { whaleStatus } from '@app/ui/utils/whaleStatus'
 import { signal } from '@app/ui/utils/signal'
+import { DataCards } from '@app/ui/components/DataCards'
+import { media } from 'styled-bootstrap-grid';
 
 type wallet = {
   [key: string]: number
@@ -129,10 +131,14 @@ export const IndexPage: FC = () => {
     <AppLayout>
       <PageContent>
         <PageWrapper>
-          <h1>The DORP Index</h1>
-          <hr />
-          <p>Whale transactions vs price trend * Whale alignment</p>
-          <p>&sigma; * 	&chi; = Dorp index</p>
+          <h1>WhaleChi</h1>
+          <p>An alaysis of the top 5 largest ethereum wallets against current 24hr ethereum price action</p>
+          <p>{signal(whaleChi, marketTrend as number).brief}</p>
+          <DataCards 
+            currentTrend={marketTrend}
+            signal={signal(whaleChi, marketTrend as number).signal}
+            whaleChi={whaleChi}
+            />
           <BalanceWrapper>
             <Table>
               <thead>
@@ -168,9 +174,6 @@ export const IndexPage: FC = () => {
               </tbody>
             </Table>
           </BalanceWrapper>
-          <p>Whale Chi: {whaleChi}</p>
-          <p>Current 24hr trend: {marketTrend}%</p>
-          <p>Current signal: {signal(whaleChi, marketTrend as number)}</p>
           <EthChart twentyFourHourPrice={twentyFourHourPrice} data={ethChartData} />
         </PageWrapper>
       </PageContent>
@@ -182,9 +185,12 @@ export const IndexPage: FC = () => {
 export default IndexPage
 
 const BalanceWrapper = styled.div`
-  display: flex;
+  display: none;
   flex-direction: column;
   row-gap: ${pxToRem(20)};
+  ${media.desktop`
+    display: flex;
+  `}
 `
 const Table = styled.table`
   display: block;

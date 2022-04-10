@@ -2,6 +2,7 @@ import { DefaultTheme } from 'styled-components'
 
 export interface ThemeConfig extends DefaultTheme {
   colors: {
+		aliceBlue: string,
     lightGreen: string,
     lightRed: string,
     lightYellow: string,

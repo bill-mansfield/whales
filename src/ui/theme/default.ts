@@ -4,6 +4,7 @@ const colors = {
   lightGreen: '#9cffb6',
   lightRed: '#ffabab',
   lightYellow: '#faff99',
+  aliceBlue: 'aliceblue',
   white: '#ffffff',
   primary: '#012F57',
   danger: '#D92241',

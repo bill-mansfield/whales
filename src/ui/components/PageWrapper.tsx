@@ -5,6 +5,7 @@ import pxToRem from '@app/ui/utils/pxToRem';
 export const PageWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: center;
   row-gap: ${pxToRem(20)};
   ${media.desktop`
     row-gap: ${pxToRem(42)};

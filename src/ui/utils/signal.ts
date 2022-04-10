@@ -1,4 +1,4 @@
-enum Signal {
+export enum Signal {
 	Pump = 'Pump',
 	Dump = 'Dump',
 	Accumulate = 'Accumulate',
@@ -8,23 +8,38 @@ enum Signal {
 }
 
 export const signal = (whaleChi: number, deltaPrice: number) => {
+	let signalObj = {
+		brief: '',
+		signal: ''
+	}
+
 	if (deltaPrice > 0 && whaleChi > 0) {
-		// Market is up and whales are buying
-		return Signal.Pump
+		signalObj.brief = 'Market is up and whales are buying'
+		signalObj.signal = Signal.Pump
+		return signalObj
 	} else if (deltaPrice > 0 && whaleChi < 0) {
-		// Market is up and whales are selling
-		return Signal.Dump
+		signalObj.brief = 'Market is up and whales are selling'
+		signalObj.signal = Signal.Dump
+		return signalObj
 	} else if (deltaPrice < 0 && whaleChi > 0) {
-		// Market is down and whales are buying
-		return Signal.Accumulate
+		signalObj.brief = 'Market is down and whales are buying'
+		signalObj.signal = Signal.Accumulate
+		return signalObj
 	} else if (deltaPrice < 0 && whaleChi < 0) {
-		// Market is down and whales are selling
-		return Signal.Panic
-	} else if (whaleChi === 0) {
-		// Whales are split
-		return Signal.Split
+		signalObj.brief = 'Market is down and whales are selling'
+		signalObj.signal = Signal.Panic
+		return signalObj
+	} else if (deltaPrice < 0 && whaleChi === 0) {
+		signalObj.brief = 'Market is down and whales are split'
+		signalObj.signal = Signal.Split
+		return signalObj
+	} else if (deltaPrice > 0 && whaleChi === 0) {
+		signalObj.brief = 'Market is up and whales are split'
+		signalObj.signal = Signal.Split
+		return signalObj
 	} else {
-		// Market is flat
-		return Signal.Flat
+		signalObj.brief = 'Market is flat??'
+		signalObj.signal = Signal.Split
+		return signalObj
 	}
 }

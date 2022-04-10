@@ -13,7 +13,7 @@ export const PageContent = styled.div`
   row-gap: ${pxToRem(15)};
   ${media.desktop`
     padding-left: ${pxToRem(50)};
-    padding-right: ${pxToRem(275)};
+    padding-right: ${pxToRem(50)};
     padding-top: ${pxToRem(100)};
     padding-bottom: ${pxToRem(114)};
     row-gap: ${pxToRem(30)};
